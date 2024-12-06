@@ -6,46 +6,47 @@ def input(filename):
             data.append(numbers)
     return data
 
-def check_safe(array):
-    sum = 0
-    
-    for i in range(len(array)):
+
+def check_direction(array):
+    dir = (array[0] - array[1]) > 0
+    if dir:
+        for i in range(len(array)-2):
+            if (array[1+i] - array[2+i]) < 0:
+                return False
+        return True
+    else:
+        for i in range(len(array)-2):
+            if (array[1+i] - array[2+i]) > 0:
+                return False
+        return True
+
+
+def check_difference(array):
+    for i in range(len(array)-1):
+        if not 0 < abs(array[i] - array[1+i]) < 4:
+            return False
         
-        streak = 0
-        if (array[i][0] - array[i][1]) > 0: 
-            
-            for j in range(len(array[i])-1):
-                if ((array[i][j] - array[i][j+1]) > 0) and ((array[i][j] - array[i][j+1]) < 4):
-                    streak += 1 
-                    
-                else:
-                    
-                    streak = 0
-    
-            
-        else:
-            
-            for j in range(len(array[i])-1):
+    return True
 
-                if ((array[i][j] - array[i][j+1]) > -4) and ((array[i][j] - array[i][j+1]) < 0):
-                    streak += 1
-                    
-                else:
-                    
-                    streak = 0
-            
-        if streak == len(array[i])-1:
-            sum += 1 
-             
-            streak = 0 
+def check_1_missing(array):
+    sum = 0
+    if check_direction(array) and check_difference(array):
+        return True
+    else:
+        for j in range(len(array)):
+            perm = array.pop(j)
+            if check_direction(array) and check_difference(array):
+                return True
+            else: array.insert(j, perm)
+    return False
 
+
+
+def check_save(array):
+    sum = 0
+    for i in range(len(array)):
+        if check_1_missing(array[i]):
+            sum += 1
     return sum
 
-        
-            
-        
-        
-                
-
-
-print(check_safe(input("C:\\Users\\morit_raojgbh\\AoC-2024\\Day_2\\input_day2.txt")))
+print(check_save(input("C:\\Users\\mo\\Code\\AoC-2024\\Day_2\\input_day2.txt")))
